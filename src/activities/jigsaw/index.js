@@ -273,7 +273,6 @@ class JigsawActivity extends BaseActivity {
   getStateForScreen() {
     return {
       status: this.status,
-      leaderboard,
       startedAt: this.startedAt,
       completedAt: this.completedAt,
       imageUrl: this.imageUrl,
