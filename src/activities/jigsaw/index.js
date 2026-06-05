@@ -233,7 +233,24 @@ class JigsawActivity extends BaseActivity {
       
       // Update participant score
       player.score += 100; // 100 points for correct placement
-      
+
+      const room = this.roomManager.getRoom(this.roomCode);
+
+const leaderboard = room
+  ? Array.from(room.participants.values())
+      .sort((a, b) => b.score - a.score)
+      .map((p, index) => ({
+        rank: index + 1,
+        name: p.displayName,
+        score: p.score
+      }))
+  : [];
+
+this.roomManager.io
+  .to(this.roomCode)
+  .emit('leaderboard-update', {
+    leaderboard
+  });
       // Assign a new piece to the player
       this.assignPiecesToPlayer(player.id);
       
@@ -271,8 +288,20 @@ class JigsawActivity extends BaseActivity {
   }
 
   getStateForScreen() {
+    const room = this.roomManager.getRoom(this.roomCode);
+
+const leaderboard = room
+  ? Array.from(room.participants.values())
+      .sort((a, b) => b.score - a.score)
+      .map((p, index) => ({
+        rank: index + 1,
+        name: p.displayName,
+        score: p.score
+      }))
+  : [];
     return {
       status: this.status,
+      leaderboard,
       startedAt: this.startedAt,
       completedAt: this.completedAt,
       imageUrl: this.imageUrl,
