@@ -189,11 +189,14 @@ class JigsawActivity extends BaseActivity {
     // Get unplaced and unassigned pieces
     const pool = this.pieces.filter(p => !p.isPlaced && !p.assignedTo);
     
-    // Sort pool randomly
-    const shuffled = pool.sort(() => 0.5 - Math.random());
-    
-    // Take what is needed
-    const toAssign = shuffled.slice(0, needed);
+    // Fisher-Yates shuffle
+for (let i = pool.length - 1; i > 0; i--) {
+  const j = Math.floor(Math.random() * (i + 1));
+  [pool[i], pool[j]] = [pool[j], pool[i]];
+}
+
+// Take what is needed
+const toAssign = pool.slice(0, needed);
     toAssign.forEach(p => {
       p.assignedTo = playerId;
     });
